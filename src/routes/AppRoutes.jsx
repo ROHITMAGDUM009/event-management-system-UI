@@ -1,39 +1,34 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "../pages/Home";
-import Events from "../pages/Events";
-import EventDetails from "../pages/EventDetails";
+import { useAuth } from "../context/AuthContext";
+import DashboardLayout from "../layouts/DashboardLayout";
 
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import MainLayout from "../layouts/MainLayout";
+import UserDashboard from "../dashboards/UserDashboard";
+import OrganizerDashboard from "../dashboards/OrganizerDashboard";
+import AdminDashboard from "../dashboards/AdminDashboard";
 
-import Dashboard from "../pages/Dashboard";
-import ProtectedRoute from "./ProtectedRoute";
+const Dashboard = () => {
+  const { user } = useAuth();
 
-const AppRoutes = () => {
+  if (!user) return null;
+
+  const renderDashboard = () => {
+    switch (user.role) {
+      case "ROLE_ADMIN":
+        return <AdminDashboard />;
+
+      case "ROLE_ORGANIZER":
+        return <OrganizerDashboard />;
+
+      case "ROLE_USER":
+      default:
+        return <UserDashboard />;
+    }
+  };
+
   return (
-    <BrowserRouter>
-      <MainLayout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/events" element={<Events />} />
-          <Route path="/events/:id" element={<EventDetails />} />
-
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </MainLayout>
-    </BrowserRouter>
+    <DashboardLayout>
+      {renderDashboard()}
+    </DashboardLayout>
   );
 };
 
-export default AppRoutes;
+export default Dashboard;
