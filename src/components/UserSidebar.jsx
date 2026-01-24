@@ -13,7 +13,12 @@ const UserSidebar = () => {
           📊 Dashboard
         </NavLink>
 
-        <NavLink to="/dashboard/bookings" className="sidebar-link">
+        <NavLink
+          to="/dashboard/bookings"
+          className={({ isActive }) =>
+            isActive ? "bg-gray-700 p-2 rounded" : "p-2"
+          }
+        >
           🎟 My Bookings
         </NavLink>
 
