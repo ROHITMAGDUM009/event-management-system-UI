@@ -8,13 +8,14 @@ const Navbar = () => {
           EMS
         </h1>
 
+
         <div className="space-x-6">
           <Link to="/" className="text-gray-700 hover:text-blue-600">
             Home
-         </Link>
-        <Link to="/events" className="text-gray-700 hover:text-blue-600">
-  Events
-</Link>
+          </Link>
+          <Link to="/events" className="text-gray-700 hover:text-blue-600">
+            Events
+          </Link>
 
           <Link to="/login" className="text-gray-700 hover:text-blue-600">
             Login
