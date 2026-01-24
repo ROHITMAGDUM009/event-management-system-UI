@@ -16,10 +16,9 @@ const Login = () => {
 
   // Form submit handler
   const handleSubmit = (e) => {
-    e.preventDefault(); // stop page reload
+    e.preventDefault();
     setError("");
 
-    // BASIC VALIDATION
     if (!email || !password) {
       setError("Email and password are required");
       return;
@@ -30,24 +29,35 @@ const Login = () => {
       return;
     }
 
-    // Simulate API call (temporary)
     setLoading(true);
 
     setTimeout(() => {
       setLoading(false);
 
-      // TEMP simulated backend response
+      // USER
       if (email === "user@gmail.com" && password === "123456") {
-        login("fake-jwt-token-123", "USER");
+        login("fake-jwt-user", "ROLE_USER");
         navigate("/dashboard");
-      } else if (email === "admin@gmail.com" && password === "123456") {
-        login("fake-jwt-token-456", "ADMIN");
+      }
+
+      // ORGANIZER
+      else if (email === "organizer@gmail.com" && password === "123456") {
+        login("fake-jwt-organizer", "ROLE_ORGANIZER");
         navigate("/dashboard");
-      } else {
+      }
+
+      // ADMIN
+      else if (email === "admin@gmail.com" && password === "123456") {
+        login("fake-jwt-admin", "ROLE_ADMIN");
+        navigate("/dashboard");
+      }
+
+      else {
         setError("Invalid email or password");
       }
     }, 1000);
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -90,11 +100,10 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full text-white py-2 rounded ${
-              loading
+            className={`w-full text-white py-2 rounded ${loading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-blue-600 hover:bg-blue-700"
-            }`}
+              }`}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
