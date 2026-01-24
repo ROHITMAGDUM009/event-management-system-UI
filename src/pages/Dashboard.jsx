@@ -5,11 +5,16 @@ import AdminDashboard from "../dashboards/AdminDashboard";
 
 const Dashboard = () => {
   const { user } = useAuth();
+  if (!user) return null;
 
-  if (user.role === "ADMIN") return <AdminDashboard />;
-  if (user.role === "ORGANIZER") return <OrganizerDashboard />;
-
-  return <UserDashboard />;
+  switch (user.role) {
+    case "ROLE_ADMIN":
+      return <AdminDashboard />;
+    case "ROLE_ORGANIZER":
+      return <OrganizerDashboard />;
+    default:
+      return <UserDashboard />;
+  }
 };
 
 export default Dashboard;
