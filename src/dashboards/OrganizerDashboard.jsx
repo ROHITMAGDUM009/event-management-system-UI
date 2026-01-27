@@ -1,5 +1,10 @@
+import { useNavigate } from "react-router-dom";
+
 const OrganizerDashboard = () => {
+
+  const navigate = useNavigate();
   // TEMP DATA (replace with backend APIs later)
+
   const stats = {
     totalEvents: 5,
     approvedEvents: 3,
@@ -57,15 +62,21 @@ const OrganizerDashboard = () => {
         </h3>
 
         <div className="flex flex-wrap gap-4">
-          <button className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">
+          <button
+            onClick={() => navigate("/dashboard/create-event")}
+            className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">
             Create New Event
           </button>
 
-          <button className="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700">
+          <button
+            onClick={() => navigate("/dashboard/my-events")}
+            className="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700">
             View My Events
           </button>
 
-          <button className="bg-purple-600 text-white px-5 py-2 rounded hover:bg-purple-700">
+          <button
+            onClick={() => navigate("/dashboard/bookings")}
+            className="bg-purple-600 text-white px-5 py-2 rounded hover:bg-purple-700">
             View Bookings
           </button>
         </div>
