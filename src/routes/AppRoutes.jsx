@@ -15,12 +15,14 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import ProtectedRoute from "./ProtectedRoute";
 
 /* DASHBOARDS */
-import Dashboard from "../pages/Dashboard";
+import UserDashboard from "../dashboards/UserDashboard";
+import OrganizerDashboard from "../dashboards/OrganizerDashboard";
+import AdminDashboard from "../dashboards/AdminDashboard";
 
-/* USER PAGES */
+/* USER */
 import MyBookings from "../pages/MyBookings";
 
-/* ORGANIZER PAGES */
+/* ORGANIZER */
 import OrganizerMyEvents from "../pages/OrganizerMyEvents";
 import OrganizerBookings from "../pages/OrganizerBookings";
 import CreateEvent from "../pages/CreateEvent";
@@ -39,7 +41,7 @@ const AppRoutes = () => {
           <Route path="/register" element={<Register />} />
         </Route>
 
-        {/* ================= USER AREA ================= */}
+        {/* ================= USER ================= */}
         <Route
           path="/user"
           element={
@@ -53,7 +55,7 @@ const AppRoutes = () => {
           <Route path="payments" element={<MyBookings />} />
         </Route>
 
-        {/* ================= ORGANIZER AREA ================= */}
+        {/* ================= ORGANIZER ================= */}
         <Route
           path="/organizer"
           element={
@@ -68,9 +70,17 @@ const AppRoutes = () => {
           <Route path="bookings" element={<OrganizerBookings />} />
         </Route>
 
-
-        {/* ================= ADMIN AREA ================= */}
-
+        {/* ================= ADMIN ================= */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminDashboard />} />
+        </Route>
 
       </Routes>
     </BrowserRouter>
