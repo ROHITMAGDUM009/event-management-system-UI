@@ -18,19 +18,19 @@ const OrganizerSidebar = () => {
 
       {/* NAV LINKS */}
       <nav className="space-y-2">
-        <NavLink to="/dashboard" className={linkClass}>
+        <NavLink to="/organizer" className={linkClass}>
           📊 Dashboard
         </NavLink>
 
-        <NavLink to="/dashboard/my-events" className={linkClass}>
+        <NavLink to="/organizer/my-events" className={linkClass}>
           🎫 My Events
         </NavLink>
 
-        <NavLink to="/dashboard/create-event" className={linkClass}>
+        <NavLink to="/organizer/create-event" className={linkClass}>
           ➕ Create Event
         </NavLink>
 
-        <NavLink to="/dashboard/bookings" className={linkClass}>
+        <NavLink to="/organizer/bookings" className={linkClass}>
           📄 Event Bookings
         </NavLink>
       </nav>
