@@ -9,12 +9,12 @@ const UserSidebar = () => {
       <h2 className="text-xl font-bold mb-6">User Panel</h2>
 
       <nav className="flex flex-col gap-3">
-        <NavLink to="/dashboard" className="sidebar-link">
+        <NavLink to="/user" className="sidebar-link">
           📊 Dashboard
         </NavLink>
 
         <NavLink
-          to="/dashboard/bookings"
+          to="/user/my-bookings"
           className={({ isActive }) =>
             isActive ? "bg-gray-700 p-2 rounded" : "p-2"
           }
@@ -22,7 +22,7 @@ const UserSidebar = () => {
           🎟 My Bookings
         </NavLink>
 
-        <NavLink to="/dashboard/payments" className="sidebar-link">
+        <NavLink to="/user/payments" className="sidebar-link">
           💳 Payments
         </NavLink>
 
