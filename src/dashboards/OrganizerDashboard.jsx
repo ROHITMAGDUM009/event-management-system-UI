@@ -63,19 +63,19 @@ const OrganizerDashboard = () => {
 
         <div className="flex flex-wrap gap-4">
           <button
-            onClick={() => navigate("/dashboard/create-event")}
+            onClick={() => navigate("/organizer/create-event")}
             className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">
             Create New Event
           </button>
 
           <button
-            onClick={() => navigate("/dashboard/my-events")}
+            onClick={() => navigate("/organizer/my-events")}
             className="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700">
             View My Events
           </button>
 
           <button
-            onClick={() => navigate("/dashboard/bookings")}
+            onClick={() => navigate("/organizer/bookings")}
             className="bg-purple-600 text-white px-5 py-2 rounded hover:bg-purple-700">
             View Bookings
           </button>
