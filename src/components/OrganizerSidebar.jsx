@@ -3,7 +3,6 @@ import { useAuth } from "../context/AuthContext";
 
 const OrganizerSidebar = () => {
   const { logout } = useAuth();
-
   const linkClass = ({ isActive }) =>
     `block px-4 py-2 rounded text-sm font-medium transition ${isActive
       ? "bg-blue-600 text-white"
