@@ -37,19 +37,19 @@ const Login = () => {
       // USER
       if (email === "user@gmail.com" && password === "123456") {
         login("fake-jwt-user", "ROLE_USER");
-        navigate("/dashboard");
+        navigate("/user");
       }
 
       // ORGANIZER
       else if (email === "organizer@gmail.com" && password === "123456") {
         login("fake-jwt-organizer", "ROLE_ORGANIZER");
-        navigate("/dashboard");
+        navigate("/organizer");
       }
 
       // ADMIN
       else if (email === "admin@gmail.com" && password === "123456") {
         login("fake-jwt-admin", "ROLE_ADMIN");
-        navigate("/dashboard");
+        navigate("/admin");
       }
 
       else {
@@ -101,8 +101,8 @@ const Login = () => {
             type="submit"
             disabled={loading}
             className={`w-full text-white py-2 rounded ${loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
               }`}
           >
             {loading ? "Logging in..." : "Login"}
