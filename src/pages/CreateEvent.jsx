@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { createEvent } from "../api/eventApi";
 
 const CreateEvent = () => {
+
     const [form, setForm] = useState({
         title: "",
         description: "",
@@ -20,24 +22,19 @@ const CreateEvent = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage("");
         setLoading(true);
 
         // 🔜 Replace with backend API
-        setTimeout(() => {
-            setLoading(false);
-            setMessage("Event created successfully (Pending Approval)");
-            setForm({
-                title: "",
-                description: "",
-                location: "",
-                eventDate: "",
-                eventType: "FREE",
-                price: "",
-            });
-        }, 1000);
+        try {
+            await createEvent(formData);
+            alert("Event created successfully");
+            navigate("/organizer/my-events");
+        } catch {
+            alert("Failed to create event");
+        }
     };
 
     return (
