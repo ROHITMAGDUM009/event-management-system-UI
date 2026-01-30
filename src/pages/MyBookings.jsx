@@ -1,27 +1,15 @@
 import StatusBadge from "../components/StatusBadge";
+import { useEffect, useState } from "react";
+import { fetchMyBookings } from "../api/bookingApi";
 
 const MyBookings = () => {
-  // TEMP DATA (replace with API later)
-  const bookings = [
-    {
-      id: 1,
-      eventName: "Tech Conference 2026",
-      eventDate: "2026-02-10",
-      location: "Pune",
-      status: "APPROVED",
-      paymentStatus: "PAID",
-      amount: 499,
-    },
-    {
-      id: 2,
-      eventName: "Startup Meetup",
-      eventDate: "2026-03-05",
-      location: "Mumbai",
-      status: "PENDING",
-      paymentStatus: "PENDING",
-      amount: 299,
-    },
-  ];
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    fetchMyBookings()
+      .then(res => setBookings(res.data))
+      .catch(console.error);
+  }, []);
 
   return (
     <div className="p-6">
