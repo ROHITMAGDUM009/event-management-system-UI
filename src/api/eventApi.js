@@ -11,3 +11,8 @@ export const updateEvent = (id, data) =>
 
 export const deleteEvent = (id) =>
   api.delete(`/api/events/${id}`);
+
+// GET all approved events
+export const fetchEvents = () => {
+  return api.get("/api/events");
+};
