@@ -1,3 +1,4 @@
+import { loginApi } from "../api/authApi";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -6,16 +7,15 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Form state
+  // FORM STATE (❗ REQUIRED)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // UI state
+  // UI STATE
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Form submit handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -24,47 +24,34 @@ const Login = () => {
       return;
     }
 
-    if (!email.includes("@")) {
-      setError("Please enter a valid email address");
-      return;
-    }
-
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const res = await loginApi({ email, password });
 
-      // USER
-      if (email === "user@gmail.com" && password === "123456") {
-        login("fake-jwt-user", "ROLE_USER");
+      // SAVE TOKEN + ROLE
+      login(res.data.token, res.data.role);
+
+      // ROLE BASED REDIRECT
+      if (res.data.role === "ROLE_USER") {
         navigate("/user");
-      }
-
-      // ORGANIZER
-      else if (email === "organizer@gmail.com" && password === "123456") {
-        login("fake-jwt-organizer", "ROLE_ORGANIZER");
+      } else if (res.data.role === "ROLE_ORGANIZER") {
         navigate("/organizer");
-      }
-
-      // ADMIN
-      else if (email === "admin@gmail.com" && password === "123456") {
-        login("fake-jwt-admin", "ROLE_ADMIN");
+      } else if (res.data.role === "ROLE_ADMIN") {
         navigate("/admin");
       }
-
-      else {
-        setError("Invalid email or password");
-      }
-    }, 1000);
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
-
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded shadow w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
-        {/* ERROR MESSAGE */}
         {error && (
           <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
             {error}
@@ -96,7 +83,6 @@ const Login = () => {
             />
           </div>
 
-          {/* SUBMIT BUTTON */}
           <button
             type="submit"
             disabled={loading}
@@ -109,7 +95,6 @@ const Login = () => {
           </button>
         </form>
 
-        {/* EXTRA LINKS */}
         <div className="text-center mt-4 text-sm text-gray-600">
           Don’t have an account?{" "}
           <a href="/register" className="text-blue-600 hover:underline">
