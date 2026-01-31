@@ -1,38 +1,45 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-/* PUBLIC */
+/* ================= PUBLIC PAGES ================= */
 import Home from "../pages/Home";
 import Events from "../pages/Events";
 import EventDetails from "../pages/EventDetails";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 
-/* LAYOUTS */
+/* ================= LAYOUTS ================= */
 import MainLayout from "../layouts/MainLayout";
 import DashboardLayout from "../layouts/DashboardLayout";
 
-/* AUTH */
+/* ================= AUTH ================= */
 import ProtectedRoute from "./ProtectedRoute";
 
-/* DASHBOARDS */
+/* ================= DASHBOARDS ================= */
 import UserDashboard from "../dashboards/UserDashboard";
 import OrganizerDashboard from "../dashboards/OrganizerDashboard";
 import AdminDashboard from "../dashboards/AdminDashboard";
 
-/* USER */
-import MyBookings from "../pages/MyBookings";
+/* ================= USER PAGES ================= */
+import MyBookings from "../pages/user/MyBookings";
+import MyEvents from "../pages/user/MyEvents";
 
-/* ORGANIZER */
-import OrganizerMyEvents from "../pages/OrganizerMyEvents";
-import OrganizerBookings from "../pages/OrganizerBookings";
-import CreateEvent from "../pages/CreateEvent";
+/* ================= ORGANIZER PAGES ================= */
+import OrganizerMyEvents from "../pages/organizer/OrganizerMyEvents";
+import OrganizerBookings from "../pages/organizer/OrganizerBookings";
+import CreateEvent from "../pages/organizer/CreateEvent";
+
+/* ================= ADMIN PAGES ================= */
+import AdminUsers from "../pages/admin/AdminUsers";
+import AdminOrganizers from "../pages/admin/AdminOrganizers";
+import AdminEvents from "../pages/admin/AdminEvents";
+import AdminPayments from "../pages/admin/AdminPayments";
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* ================= PUBLIC ================= */}
+        {/* ================= PUBLIC ROUTES ================= */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/events" element={<Events />} />
@@ -41,7 +48,7 @@ const AppRoutes = () => {
           <Route path="/register" element={<Register />} />
         </Route>
 
-        {/* ================= USER ================= */}
+        {/* ================= USER ROUTES ================= */}
         <Route
           path="/user"
           element={
@@ -52,10 +59,10 @@ const AppRoutes = () => {
         >
           <Route index element={<UserDashboard />} />
           <Route path="my-bookings" element={<MyBookings />} />
-          <Route path="payments" element={<MyBookings />} />
+          <Route path="my-events" element={<MyEvents />} />
         </Route>
 
-        {/* ================= ORGANIZER ================= */}
+        {/* ================= ORGANIZER ROUTES ================= */}
         <Route
           path="/organizer"
           element={
@@ -70,7 +77,7 @@ const AppRoutes = () => {
           <Route path="bookings" element={<OrganizerBookings />} />
         </Route>
 
-        {/* ================= ADMIN ================= */}
+        {/* ================= ADMIN ROUTES ================= */}
         <Route
           path="/admin"
           element={
@@ -80,6 +87,10 @@ const AppRoutes = () => {
           }
         >
           <Route index element={<AdminDashboard />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="organizers" element={<AdminOrganizers />} />
+          <Route path="events" element={<AdminEvents />} />
+          <Route path="payments" element={<AdminPayments />} />
         </Route>
 
       </Routes>
