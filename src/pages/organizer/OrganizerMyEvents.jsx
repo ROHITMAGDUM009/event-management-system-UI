@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import StatusBadge from "../../components/StatusBadge";
 
 const OrganizerMyEvents = () => {
+
     const navigate = useNavigate();
 
     // TEMP DATA (replace with backend later)
