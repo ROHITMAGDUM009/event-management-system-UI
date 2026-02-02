@@ -20,6 +20,7 @@ const AdminOrganizers = () => {
                     )}
                 </div>
             ))}
+
         </div>
     );
 };
