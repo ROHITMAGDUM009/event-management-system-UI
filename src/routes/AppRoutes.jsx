@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 /* ================= PUBLIC PAGES ================= */
 import Home from "../pages/Home";
 import Events from "../pages/Events";
+
 import EventDetails from "../pages/EventDetails";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
