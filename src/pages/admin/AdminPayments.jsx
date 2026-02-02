@@ -7,6 +7,7 @@ const AdminPayments = () => {
                 <p>Successful Payments: 320</p>
                 <p>Pending Payments: 12</p>
             </div>
+
         </div>
     );
 };
