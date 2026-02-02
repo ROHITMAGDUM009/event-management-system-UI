@@ -19,6 +19,7 @@ const AdminOrganizers = () => {
                         </button>
                     )}
                 </div>
+
             ))}
 
         </div>
