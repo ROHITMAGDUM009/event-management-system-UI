@@ -12,16 +12,13 @@ const AdminOrganizers = () => {
                 <div key={o.id} className="bg-white p-4 shadow rounded mb-4">
                     <p><b>Name:</b> {o.name}</p>
                     <p><b>Email:</b> {o.email}</p>
-
                     {!o.approved && (
                         <button className="mt-3 bg-green-600 text-white px-4 py-1 rounded">
                             Approve Organizer
                         </button>
                     )}
                 </div>
-
             ))}
-
         </div>
     );
 };
