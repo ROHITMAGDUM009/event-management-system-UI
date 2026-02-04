@@ -103,5 +103,4 @@ const MyBookings = () => {
     </div>
   );
 };
-
 export default MyBookings;
