@@ -2,15 +2,13 @@ import { useNavigate } from "react-router-dom";
 import StatusBadge from "../../components/StatusBadge";
 
 const OrganizerMyEvents = () => {
-
-    const navigate = useNavigate();
-
-    // TEMP DATA (replace with backend later)
+    // 🔹 TEMP STATIC DATA
     const events = [
         {
             id: 1,
             title: "Tech Conference 2026",
             date: "2026-02-10",
+            location: "Pune",
             type: "PAID",
             price: 499,
             status: "APPROVED",
@@ -19,6 +17,7 @@ const OrganizerMyEvents = () => {
             id: 2,
             title: "Startup Meetup",
             date: "2026-03-05",
+            location: "Mumbai",
             type: "FREE",
             price: 0,
             status: "PENDING",
@@ -26,13 +25,13 @@ const OrganizerMyEvents = () => {
         {
             id: 3,
             title: "Design Workshop",
-            date: "2026-04-12",
+            date: "2026-04-01",
+            location: "Bangalore",
             type: "PAID",
             price: 299,
             status: "REJECTED",
         },
     ];
-
     return (
         <div className="p-6">
             {/* HEADER */}
