@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import StatusBadge from "../../components/StatusBadge";
 
 const OrganizerMyEvents = () => {
-    // 🔹 TEMP STATIC DATA
+    // 🔹 TEMP STATIC
     const events = [
         {
             id: 1,
