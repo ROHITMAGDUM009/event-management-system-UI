@@ -5,9 +5,7 @@ const AdminOrganizers = () => {
 
     return (
         <div>
-
             <h1 className="text-2xl font-bold mb-6">Organizers</h1>
-
             {organizers.map(o => (
                 <div key={o.id} className="bg-white p-4 shadow rounded mb-4">
                     <p><b>Name:</b> {o.name}</p>
@@ -22,5 +20,4 @@ const AdminOrganizers = () => {
         </div>
     );
 };
-
 export default AdminOrganizers;
