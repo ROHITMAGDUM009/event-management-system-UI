@@ -2,8 +2,6 @@ import { useState } from "react";
 import { createEvent } from "../../api/eventApi";
 
 const CreateEvent = () => {
-
-
     const [form, setForm] = useState({
         title: "",
         description: "",
