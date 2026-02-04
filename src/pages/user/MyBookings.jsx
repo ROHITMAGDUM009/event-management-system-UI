@@ -1,24 +1,43 @@
 import StatusBadge from "../../components/StatusBadge";
-import { useEffect, useState } from "react";
-import { fetchMyBookings } from "../../api/bookingApi";
 
 const MyBookings = () => {
-  const [bookings, setBookings] = useState([]);
-
-  useEffect(() => {
-    fetchMyBookings()
-      .then(res => setBookings(res.data))
-      .catch(console.error);
-  }, []);
+  // 🔹 TEMP STATIC DATA (NO BACKEND)
+  const bookings = [
+    {
+      id: 1,
+      eventName: "Tech Conference 2026",
+      eventDate: "2026-02-10",
+      location: "Pune",
+      bookingStatus: "APPROVED",
+      paymentStatus: "SUCCESS",
+      amount: 499,
+    },
+    {
+      id: 2,
+      eventName: "Startup Meetup",
+      eventDate: "2026-03-15",
+      location: "Mumbai",
+      bookingStatus: "PENDING",
+      paymentStatus: "PENDING",
+      amount: 299,
+    },
+    {
+      id: 3,
+      eventName: "Design Workshop",
+      eventDate: "2026-04-01",
+      location: "Bangalore",
+      bookingStatus: "APPROVED",
+      paymentStatus: "NOT_REQUIRED",
+      amount: 0,
+    },
+  ];
 
   return (
     <div className="p-6">
-      {/* PAGE HEADER */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          My Bookings
-        </h1>
-      </div>
+      {/* HEADER */}
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">
+        My Bookings
+      </h1>
 
       {/* EMPTY STATE */}
       {bookings.length === 0 ? (
@@ -33,7 +52,7 @@ const MyBookings = () => {
                 <th className="p-4">Event</th>
                 <th className="p-4">Date</th>
                 <th className="p-4">Location</th>
-                <th className="p-4">Status</th>
+                <th className="p-4">Booking</th>
                 <th className="p-4">Payment</th>
                 <th className="p-4">Amount</th>
                 <th className="p-4">Action</th>
@@ -51,7 +70,7 @@ const MyBookings = () => {
                   <td className="p-4">{b.location}</td>
 
                   <td className="p-4">
-                    <StatusBadge value={b.status} />
+                    <StatusBadge value={b.bookingStatus} />
                   </td>
 
                   <td className="p-4">
