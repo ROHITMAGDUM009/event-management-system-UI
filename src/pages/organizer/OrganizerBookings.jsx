@@ -2,7 +2,6 @@ import { useState } from "react";
 import StatusBadge from "../../components/StatusBadge";
 
 const OrganizerBookings = () => {
-
     const [bookings, setBookings] = useState([
         {
             id: 1,
