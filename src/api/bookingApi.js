@@ -1,13 +1,13 @@
 import api from "./axios";
 
-// Book an event
 export const bookEvent = (eventId) =>
-  api.post("/api/bookings", { eventId });
+  api.post("/bookings", { eventId });
 
-// Fetch logged-in user's bookings
 export const fetchMyBookings = () =>
-  api.get("/api/bookings/my");
+  api.get("/user/bookings");
 
-// Pay for a booking
-export const payForBooking = (bookingId) =>
-  api.post(`/api/payments/pay/${bookingId}`);
+export const fetchOrganizerBookings = () =>
+  api.get("/organizer/bookings");
+
+export const approveBooking = (bookingId) =>
+  api.put(`/organizer/bookings/${bookingId}/approve`);
