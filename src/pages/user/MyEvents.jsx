@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const MyEvents = () => {
-  // TEMP DATA (later from backend)  
+  // TEMP DATA (later from backend)
   const [events] = useState([
     {
       id: 1,
