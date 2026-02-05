@@ -11,6 +11,7 @@ const MyEvents = () => {
       status: "APPROVED",
       price: 499,
     },
+
     {
       id: 2,
       title: "Startup Meetup",
