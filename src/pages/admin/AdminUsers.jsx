@@ -3,6 +3,7 @@ const AdminUsers = () => {
         { id: 1, name: "Rohit", email: "user@gmail.com", enabled: true },
         { id: 2, name: "Amit", email: "test@gmail.com", enabled: false }
     ];
+
     return (
         <div>
             <h1 className="text-2xl font-bold mb-6">Users</h1>
