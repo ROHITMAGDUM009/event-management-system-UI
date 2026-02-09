@@ -6,6 +6,7 @@ const EventDetails = () => {
   const { id } = useParams(); // URL param
   const [showBooking, setShowBooking] = useState(false);
 
+
   // TEMP DATA (later comes from backend)
   const events = [
     {
