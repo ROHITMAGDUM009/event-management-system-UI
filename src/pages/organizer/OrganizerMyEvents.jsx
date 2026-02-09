@@ -3,6 +3,7 @@ import StatusBadge from "../../components/StatusBadge";
 
 const OrganizerMyEvents = () => {
     // 🔹 TEMP STATIC
+
     const events = [
         {
             id: 1,
