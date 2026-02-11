@@ -20,5 +20,6 @@ const AdminEvents = () => {
             ))}
         </div>
     );
+
 };
 export default AdminEvents;
