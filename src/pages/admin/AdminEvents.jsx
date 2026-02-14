@@ -1,5 +1,4 @@
 const AdminEvents = () => {
-
     const events = [
         { id: 1, title: "Tech Conf", status: "PENDING" }
     ];
