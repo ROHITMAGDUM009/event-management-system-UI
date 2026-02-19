@@ -9,7 +9,7 @@ const AdminUsers = () => {
 
             <table className="w-full bg-white shadow rounded">
                 <thead className="bg-gray-100">
-                    <tr>
+                    <tr className="border-b text-left">
                         <th className="p-3 text-left">Name</th>
                         <th className="p-3 text-left">Email</th>
                         <th className="p-3">Status</th>
