@@ -1,51 +1,47 @@
-import StatusBadge from "../components/StatusBadge";
+import { useEffect, useState } from "react";
+import { getMyBookings, payForBooking } from "../api/bookingApi";
 
 const UserDashboard = () => {
-  // TEMP DATA (replace with backend later)
-  const bookings = [
-    {
-      id: 1,
-      eventName: "Tech Conference 2026",
-      date: "2026-02-10",
-      status: "APPROVED",
-      paymentStatus: "PAID",
-    },
-    {
-      id: 2,
-      eventName: "Startup Meetup",
-      date: "2026-03-05",
-      status: "PENDING",
-      paymentStatus: "PENDING",
-    },
-  ];
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchBookings = async () => {
+    try {
+      const res = await getMyBookings();
+      setBookings(res.data);
+    } catch (err) {
+      console.error("Failed to load bookings", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchBookings(); }, []);
+
+  const handlePay = async (bookingId) => {
+    try {
+      await payForBooking(bookingId);
+      alert("Payment successful!");
+      fetchBookings();
+    } catch (err) {
+      alert("Payment failed");
+    }
+  };
+
+  if (loading) return <p className="text-gray-500">Loading your bookings...</p>;
+
+  const approved = bookings.filter(b => b.bookingStatus === "APPROVED").length;
+  const pendingPayment = bookings.filter(b => b.paymentStatus === "PENDING").length;
 
   return (
     <div className="p-6">
-      {/* TITLE */}
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">
-        User Dashboard
-      </h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">My Dashboard</h1>
 
       {/* SUMMARY CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white shadow rounded p-4">
-          <p className="text-gray-500 text-sm">Total Bookings</p>
-          <p className="text-2xl font-bold">{bookings.length}</p>
-        </div>
-
-        <div className="bg-white shadow rounded p-4">
-          <p className="text-gray-500 text-sm">Approved Bookings</p>
-          <p className="text-2xl font-bold">
-            {bookings.filter(b => b.status === "APPROVED").length}
-          </p>
-        </div>
-
-        <div className="bg-white shadow rounded p-4">
-          <p className="text-gray-500 text-sm">Pending Payments</p>
-          <p className="text-2xl font-bold">
-            {bookings.filter(b => b.paymentStatus === "PENDING").length}
-          </p>
-        </div>
+        <StatCard title="Total Bookings" value={bookings.length} />
+        <StatCard title="Approved Bookings" value={approved} />
+        <StatCard title="Pending Payments" value={pendingPayment} />
       </div>
 
       {/* BOOKINGS TABLE */}
@@ -56,45 +52,40 @@ const UserDashboard = () => {
           <p className="text-gray-500">No bookings found.</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+            <table className="w-full">
               <thead>
-                <tr className="border-b text-left">
+                <tr className="border-b text-left text-gray-600">
                   <th className="pb-3">Event</th>
-                  <th className="pb-3">Date</th>
-                  <th className="pb-3">Status</th>
+                  <th className="pb-3">Booking Status</th>
                   <th className="pb-3">Payment</th>
+                  <th className="pb-3">Amount</th>
                   <th className="pb-3">Action</th>
                 </tr>
               </thead>
-
               <tbody>
-                {bookings.map(b => (
-                  <tr key={b.id} className="border-b">
-                    <td className="py-3">{b.eventName}</td>
-                    <td className="py-3">{b.date}</td>
-
+                {bookings.map((b) => (
+                  <tr key={b.id} className="border-b hover:bg-gray-50">
+                    <td className="py-3">{b.event?.title || "—"}</td>
                     <td className="py-3">
-                      <StatusBadge value={b.status} />
+                      <StatusBadge value={b.bookingStatus} />
                     </td>
-
                     <td className="py-3">
                       <StatusBadge value={b.paymentStatus} />
                     </td>
-
-                    <td className="py-3 flex gap-2">
+                    <td className="py-3">
+                      {b.amount > 0 ? `₹${b.amount}` : "Free"}
+                    </td>
+                    <td className="py-3">
                       {b.paymentStatus === "PENDING" ? (
-                        <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
-                          Pay
+                        <button
+                          onClick={() => handlePay(b.id)}
+                          className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm"
+                        >
+                          Pay Now
                         </button>
                       ) : (
-                        <button className="bg-gray-300 px-3 py-1 rounded cursor-not-allowed">
-                          Paid
-                        </button>
+                        <span className="text-gray-400 text-sm">—</span>
                       )}
-
-                      <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
-                        View
-                      </button>
                     </td>
                   </tr>
                 ))}
@@ -104,6 +95,28 @@ const UserDashboard = () => {
         )}
       </div>
     </div>
+  );
+};
+
+const StatCard = ({ title, value }) => (
+  <div className="bg-white shadow rounded p-4">
+    <p className="text-gray-500 text-sm">{title}</p>
+    <p className="text-2xl font-bold mt-2">{value}</p>
+  </div>
+);
+
+const StatusBadge = ({ value }) => {
+  const colors = {
+    APPROVED: "bg-green-100 text-green-700",
+    PENDING: "bg-yellow-100 text-yellow-700",
+    REJECTED: "bg-red-100 text-red-700",
+    SUCCESS: "bg-green-100 text-green-700",
+    NOT_REQUIRED: "bg-gray-100 text-gray-600",
+  };
+  return (
+    <span className={`px-2 py-1 rounded text-xs font-medium ${colors[value] || "bg-gray-100"}`}>
+      {value}
+    </span>
   );
 };
 
