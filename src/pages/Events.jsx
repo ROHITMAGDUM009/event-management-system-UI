@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import EventCard from "../components/EventCard";
-import { fetchEvents } from "../api/eventApi";
+import { getApprovedEvents } from "../api/eventApi";
 
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetchEvents()
+    getApprovedEvents()
       .then(res => setEvents(res.data))
       .catch(err => console.error("Failed to fetch events:", err));
   }, []);
