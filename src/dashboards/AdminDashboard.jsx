@@ -1,32 +1,49 @@
+import { useEffect, useState } from "react";
+import { getDashboardStats } from "../api/adminApi";
+
 const AdminDashboard = () => {
-  // Temporary stats (later from backend)
-  const stats = {
-    totalUsers: 125,
-    totalOrganizers: 18,
-    totalEvents: 42,
-    pendingEvents: 6,
-    revenue: 154200
-  };
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await getDashboardStats();
+        setStats(res.data);
+      } catch (err) {
+        setError("Failed to load dashboard stats");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  if (loading) return <p className="text-gray-500">Loading dashboard...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-8">Admin Dashboard</h1>
 
       <div className="grid md:grid-cols-3 gap-6">
-        <StatCard title="Total Users" value={stats.totalUsers} />
-        <StatCard title="Organizers" value={stats.totalOrganizers} />
-        <StatCard title="Total Events" value={stats.totalEvents} />
-        <StatCard title="Pending Approvals" value={stats.pendingEvents} />
-        <StatCard title="Revenue (₹)" value={stats.revenue} />
+        <StatCard title="Total Users" value={stats.totalUsers} color="blue" />
+        <StatCard title="Organizers" value={stats.totalOrganizers} color="purple" />
+        <StatCard title="Total Events" value={stats.totalEvents} color="green" />
+        <StatCard title="Pending Approvals" value={stats.pendingEvents} color="yellow" />
+        <StatCard title="Total Bookings" value={stats.totalBookings} color="indigo" />
+        <StatCard title="Revenue (₹)" value={`₹ ${stats.totalRevenue}`} color="emerald" />
       </div>
     </div>
   );
 };
 
-const StatCard = ({ title, value }) => (
-  <div className="bg-white shadow rounded p-6">
+const StatCard = ({ title, value, color = "blue" }) => (
+  <div className={`bg-white shadow-md rounded-lg p-6 border-l-4 border-${color}-500`}>
     <p className="text-gray-500 text-sm">{title}</p>
-    <p className="text-2xl font-bold mt-2">{value}</p>
+    <p className="text-3xl font-bold mt-2">{value}</p>
   </div>
 );
 
