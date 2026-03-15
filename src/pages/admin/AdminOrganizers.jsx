@@ -1,53 +1,87 @@
 import { useEffect, useState } from "react";
-import API from "../api/axios";
+import { getAllUsers, makeOrganizer, removeOrganizer } from "../../api/adminApi";  // ✅ correct path
 
-const AdminDashboard = () => {
+const AdminOrganizers = () => {
+    const [organizers, setOrganizers] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const [stats, setStats] = useState({
-        users: 0,
-        organizers: 0,
-        events: 0,
-        bookings: 0,
-        revenue: 0
-    });
+    const fetchOrganizers = async () => {
+        try {
+            const res = await getAllUsers();
+            // Filter only organizers from the full user list
+            const onlyOrganizers = res.data.filter(
+                (u) => u.role === "ROLE_ORGANIZER"
+            );
+            setOrganizers(onlyOrganizers);
+        } catch (err) {
+            console.error("Failed to load organizers", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                const res = await API.get("/admin/dashboard-stats");
-                setStats(res.data);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-
-        fetchStats();
+        fetchOrganizers();
     }, []);
+
+    const handleRemoveOrganizer = async (id) => {
+        if (!window.confirm("Remove organizer role from this user?")) return;
+        try {
+            await removeOrganizer(id);
+            fetchOrganizers(); // refresh list
+        } catch (err) {
+            alert("Failed to remove organizer");
+        }
+    };
+
+    if (loading) return <p className="text-gray-500">Loading organizers...</p>;
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-8">
-                Admin Dashboard Overview
-            </h1>
+            <h1 className="text-2xl font-bold mb-6">Organizers</h1>
 
-            <div className="grid md:grid-cols-3 gap-6">
-
-                <StatCard title="Total Users" value={stats.users} />
-                <StatCard title="Organizers" value={stats.organizers} />
-                <StatCard title="Total Events" value={stats.events} />
-                <StatCard title="Total Bookings" value={stats.bookings} />
-                <StatCard title="Total Revenue (₹)" value={stats.revenue} />
-
-            </div>
+            {organizers.length === 0 ? (
+                <p className="text-gray-500">No organizers found.</p>
+            ) : (
+                <div className="bg-white shadow rounded overflow-x-auto">
+                    <table className="w-full">
+                        <thead className="bg-gray-100">
+                            <tr>
+                                <th className="p-3 text-left">Name</th>
+                                <th className="p-3 text-left">Email</th>
+                                <th className="p-3 text-left">Status</th>
+                                <th className="p-3 text-left">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {organizers.map((u) => (
+                                <tr key={u.id} className="border-t hover:bg-gray-50">
+                                    <td className="p-3">{u.fullName}</td>
+                                    <td className="p-3">{u.email}</td>
+                                    <td className="p-3">
+                                        <span className={`px-2 py-1 rounded text-xs ${u.enabled
+                                            ? "bg-green-100 text-green-700"
+                                            : "bg-red-100 text-red-700"
+                                            }`}>
+                                            {u.enabled ? "Active" : "Blocked"}
+                                        </span>
+                                    </td>
+                                    <td className="p-3">
+                                        <button
+                                            onClick={() => handleRemoveOrganizer(u.id)}
+                                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                                        >
+                                            Remove Organizer
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
 };
 
-const StatCard = ({ title, value }) => (
-    <div className="bg-white shadow-md rounded-lg p-6 border">
-        <p className="text-gray-500 text-sm">{title}</p>
-        <p className="text-3xl font-bold mt-2">{value}</p>
-    </div>
-);
-
-export default AdminDashboard;
+export default AdminOrganizers;
