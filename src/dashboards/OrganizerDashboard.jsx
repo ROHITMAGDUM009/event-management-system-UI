@@ -1,101 +1,86 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getMyEvents } from "../api/eventApi";
+import { getOrganizerBookings } from "../api/bookingApi";
+import { useAuth } from "../context/AuthContext";
 
 const OrganizerDashboard = () => {
-
   const navigate = useNavigate();
-  // TEMP DATA (replace with backend APIs later)
+  const { user } = useAuth();
 
-  const stats = {
-    totalEvents: 5,
-    approvedEvents: 3,
-    pendingEvents: 2,
-    totalBookings: 124,
-    totalRevenue: 48600,
-  };
+  const [events, setEvents] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [eventsRes, bookingsRes] = await Promise.all([
+          getMyEvents(),
+          getOrganizerBookings(),
+        ]);
+        setEvents(eventsRes.data);
+        setBookings(bookingsRes.data);
+      } catch (err) {
+        console.error("Failed to load organizer data", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) return <p className="text-gray-500">Loading dashboard...</p>;
+
+  const approved = events.filter(e => e.status === "APPROVED").length;
+  const pending = events.filter(e => e.status === "PENDING").length;
+  const revenue = bookings
+    .filter(b => b.paymentStatus === "SUCCESS")
+    .reduce((sum, b) => sum + (b.amount || 0), 0);
 
   return (
     <div className="space-y-8">
-
-      {/* PAGE HEADER */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-800">
-          Organizer Profile
-        </h1>
-        <p className="text-gray-600 mt-1">
-          Manage your events, bookings, and revenue
-        </p>
+        <h1 className="text-3xl font-bold text-gray-800">Organizer Dashboard</h1>
+        <p className="text-gray-600 mt-1">Manage your events, bookings, and revenue</p>
       </div>
 
-      {/* PROFILE CARD */}
-      <div className="bg-white shadow rounded p-6 flex flex-col md:flex-row gap-6 items-center">
-        <div className="w-24 h-24 rounded-full bg-blue-600 text-white flex items-center justify-center text-3xl font-bold">
-          O
-        </div>
-
-        <div>
-          <h2 className="text-xl font-semibold text-gray-800">
-            Organizer Name
-          </h2>
-          <p className="text-gray-500">organizer01@gmail.com</p>
-          <p className="text-sm text-green-600 mt-1">
-            ✔ Verified Organizer
-          </p>
-        </div>
-      </div>
-
-      {/* STATS CARDS */}
+      {/* STATS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-        <StatCard title="Total Events" value={stats.totalEvents} />
-        <StatCard title="Approved Events" value={stats.approvedEvents} />
-        <StatCard title="Pending Events" value={stats.pendingEvents} />
-        <StatCard title="Total Bookings" value={stats.totalBookings} />
-        <StatCard
-          title="Total Revenue"
-          value={`₹ ${stats.totalRevenue}`}
-        />
+        <StatCard title="Total Events" value={events.length} />
+        <StatCard title="Approved" value={approved} />
+        <StatCard title="Pending" value={pending} />
+        <StatCard title="Total Bookings" value={bookings.length} />
+        <StatCard title="Revenue" value={`₹ ${revenue}`} />
       </div>
 
       {/* QUICK ACTIONS */}
       <div className="bg-white shadow rounded p-6">
-        <h3 className="text-lg font-semibold mb-4">
-          Quick Actions
-        </h3>
-
+        <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
         <div className="flex flex-wrap gap-4">
-          <button
-            onClick={() => navigate("/organizer/create-event")}
+          <button onClick={() => navigate("/organizer/create-event")}
             className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700">
             Create New Event
           </button>
-
-          <button
-            onClick={() => navigate("/organizer/my-events")}
+          <button onClick={() => navigate("/organizer/my-events")}
             className="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700">
             View My Events
           </button>
-
-          <button
-            onClick={() => navigate("/organizer/bookings")}
+          <button onClick={() => navigate("/organizer/bookings")}
             className="bg-purple-600 text-white px-5 py-2 rounded hover:bg-purple-700">
             View Bookings
           </button>
         </div>
       </div>
-
     </div>
   );
 };
 
-/* SMALL REUSABLE STAT CARD */
-const StatCard = ({ title, value }) => {
-  return (
-    <div className="bg-white shadow rounded p-4 text-center">
-      <p className="text-sm text-gray-500">{title}</p>
-      <p className="text-2xl font-bold text-gray-800 mt-1">
-        {value}
-      </p>
-    </div>
-  );
-};
+const StatCard = ({ title, value }) => (
+  <div className="bg-white shadow rounded p-4 text-center">
+    <p className="text-sm text-gray-500">{title}</p>
+    <p className="text-2xl font-bold text-gray-800 mt-1">{value}</p>
+  </div>
+);
 
 export default OrganizerDashboard;
