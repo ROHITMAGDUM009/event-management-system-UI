@@ -21,20 +21,20 @@ const AdminSidebar = () => {
           Dashboard
         </NavLink>
 
+        <NavLink to="/admin/users" className={linkClass}>
+          Users
+        </NavLink>
+
         <NavLink to="/admin/organizers" className={linkClass}>
           Organizers
         </NavLink>
 
-        <NavLink to="/admin/bookings" className={linkClass}>
-          Bookings
+        <NavLink to="/admin/events" className={linkClass}>
+          Events
         </NavLink>
 
         <NavLink to="/admin/payments" className={linkClass}>
           Payments
-        </NavLink>
-
-        <NavLink to="/admin/revenue" className={linkClass}>
-          Revenue
         </NavLink>
       </nav>
 

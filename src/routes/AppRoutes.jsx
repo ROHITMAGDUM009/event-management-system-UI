@@ -53,7 +53,7 @@ const AppRoutes = () => {
         <Route
           path="/user"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["ROLE_USER"]}>
               <DashboardLayout />
             </ProtectedRoute>
           }
@@ -67,7 +67,7 @@ const AppRoutes = () => {
         <Route
           path="/organizer"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["ROLE_ORGANIZER"]}>
               <DashboardLayout />
             </ProtectedRoute>
           }
@@ -82,7 +82,7 @@ const AppRoutes = () => {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
               <DashboardLayout />
             </ProtectedRoute>
           }

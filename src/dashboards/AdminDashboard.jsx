@@ -34,14 +34,23 @@ const AdminDashboard = () => {
         <StatCard title="Total Events" value={stats.totalEvents} color="green" />
         <StatCard title="Pending Approvals" value={stats.pendingEvents} color="yellow" />
         <StatCard title="Total Bookings" value={stats.totalBookings} color="indigo" />
-        <StatCard title="Revenue (₹)" value={`₹ ${stats.totalRevenue}`} color="emerald" />
+        <StatCard title="Revenue (INR)" value={`INR ${stats.totalRevenue}`} color="emerald" />
       </div>
     </div>
   );
 };
 
+const borderColors = {
+  blue: "border-blue-500",
+  purple: "border-purple-500",
+  green: "border-green-500",
+  yellow: "border-yellow-500",
+  indigo: "border-indigo-500",
+  emerald: "border-emerald-500",
+};
+
 const StatCard = ({ title, value, color = "blue" }) => (
-  <div className={`bg-white shadow-md rounded-lg p-6 border-l-4 border-${color}-500`}>
+  <div className={`bg-white shadow-md rounded-lg p-6 border-l-4 ${borderColors[color] ?? borderColors.blue}`}>
     <p className="text-gray-500 text-sm">{title}</p>
     <p className="text-3xl font-bold mt-2">{value}</p>
   </div>
