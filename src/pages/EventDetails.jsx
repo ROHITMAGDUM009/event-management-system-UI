@@ -1,69 +1,43 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getApprovedEvents } from "../api/eventApi";
 import BookingModal from "../components/BookingModal";
 
 const EventDetails = () => {
-  const { id } = useParams(); // URL param
+  const { id } = useParams();
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [showBooking, setShowBooking] = useState(false);
 
-  // TEMP DATA (later comes from backend)
-  const events = [
-    {
-      id: "1",
-      title: "Tech Conference 2026",
-      date: "12 Feb 2026",
-      location: "Pune",
-      price: 499,
-      image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df",
-      description:
-        "A full-day conference with top tech speakers, hands-on sessions, and networking opportunities.",
-    },
-    {
-      id: "2",
-      title: "Music Night Live",
-      date: "20 Mar 2026",
-      location: "Mumbai",
-      price: 799,
-      image: "https://images.unsplash.com/photo-1518972559570-0d3a1dc4f9b4",
-      description: "Enjoy live music performances by famous artists and DJs.",
-    },
-    {
-      id: "3",
-      title: "Startup Meetup",
-      date: "05 Apr 2026",
-      location: "Bangalore",
-      price: 299,
-      image: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678",
-      description:
-        "Meet startup founders, investors, and learn how to scale your business.",
-    },
-  ];
+  useEffect(() => {
+    getApprovedEvents()
+      .then((res) => {
+        const found = (res.data ?? []).find((e) => e.id === Number(id));
+        setEvent(found || null);
+      })
+      .catch((err) => console.error("Failed to fetch event:", err))
+      .finally(() => setLoading(false));
+  }, [id]);
 
-  const event = events.find((e) => e.id === id);
-
-  if (!event) {
-    return (
-      <div className="p-10 text-center text-gray-600">Event not found</div>
-    );
-  }
+  if (loading) return <div className="p-10 text-center text-gray-600">Loading event details...</div>;
+  if (!event) return <div className="p-10 text-center text-gray-600">Event not found</div>;
 
   return (
     <div className="bg-gray-100 min-h-screen py-10">
       <div className="max-w-5xl mx-auto bg-white rounded shadow overflow-hidden">
-        {/* IMAGE */}
-        <img
-          src={event.image}
-          alt={event.title}
-          className="w-full h-96 object-cover"
-        />
-
         {/* CONTENT */}
         <div className="p-6">
           <h1 className="text-3xl font-bold text-gray-800">{event.title}</h1>
 
           <p className="text-gray-500 mt-2">
-            {event.date} • {event.location}
+            {event.eventDate} • {event.location}
           </p>
+
+          {event.eventType && (
+            <span className="inline-block mt-2 px-3 py-1 text-xs font-semibold text-white bg-blue-500 rounded">
+              {event.eventType}
+            </span>
+          )}
 
           <p className="text-gray-700 mt-6 leading-relaxed">
             {event.description}
@@ -71,7 +45,7 @@ const EventDetails = () => {
 
           <div className="mt-8 flex justify-between items-center">
             <span className="text-2xl font-bold text-blue-600">
-              ₹{event.price}
+              {event.price > 0 ? `₹${event.price}` : "Free"}
             </span>
 
             <button
