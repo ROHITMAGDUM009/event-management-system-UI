@@ -69,8 +69,8 @@ const AdminEvents = () => {
               {events.map((event) => (
                 <tr key={event.id} className="border-t hover:bg-gray-50">
                   <td className="p-3 font-medium">{event.title}</td>
-                  <td className="p-3">{event.organizerEmail ?? event.organizerName ?? "N/A"}</td>
-                  <td className="p-3">{event.date ?? "N/A"}</td>
+                  <td className="p-3">{event.createdBy ?? "N/A"}</td>
+                  <td className="p-3">{event.eventDate ?? "N/A"}</td>
                   <td className="p-3">
                     <StatusBadge value={event.status} />
                   </td>

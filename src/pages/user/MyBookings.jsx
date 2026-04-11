@@ -1,48 +1,46 @@
+import { useEffect, useState } from "react";
 import StatusBadge from "../../components/StatusBadge";
+import { getMyBookings, payForBooking } from "../../api/bookingApi";
 
 const MyBookings = () => {
-  // 🔹 TEMP STATIC DATA (NO BACKEND)
-  const bookings = [
-    {
-      id: 1,
-      eventName: "Tech Conference 2026",
-      eventDate: "2026-02-10",
-      location: "Pune",
-      bookingStatus: "APPROVED",
-      paymentStatus: "SUCCESS",
-      amount: 499,
-    },
-    {
-      id: 2,
-      eventName: "Startup Meetup",
-      eventDate: "2026-03-15",
-      location: "Mumbai",
-      bookingStatus: "PENDING",
-      paymentStatus: "PENDING",
-      amount: 299,
-    },
-    {
-      id: 3,
-      eventName: "Design Workshop",
-      eventDate: "2026-04-01",
-      location: "Bangalore",
-      bookingStatus: "APPROVED",
-      paymentStatus: "NOT_REQUIRED",
-      amount: 0,
-    },
-  ];
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [payingId, setPayingId] = useState(null);
+
+  const fetchBookings = async () => {
+    try {
+      const res = await getMyBookings();
+      setBookings(res.data ?? []);
+    } catch (err) {
+      console.error("Failed to load bookings", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchBookings(); }, []);
+
+  const handlePay = async (bookingId) => {
+    setPayingId(bookingId);
+    try {
+      await payForBooking(bookingId);
+      fetchBookings();
+    } catch (err) {
+      alert("Payment failed");
+    } finally {
+      setPayingId(null);
+    }
+  };
+
+  if (loading) return <p className="text-gray-500 p-6">Loading bookings...</p>;
 
   return (
     <div className="p-6">
-      {/* HEADER */}
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">
-        My Bookings
-      </h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">My Bookings</h1>
 
-      {/* EMPTY STATE */}
       {bookings.length === 0 ? (
         <div className="bg-white p-10 rounded shadow text-center text-gray-500">
-          You haven’t booked any events yet.
+          You haven't booked any events yet.
         </div>
       ) : (
         <div className="bg-white shadow rounded overflow-x-auto">
@@ -51,7 +49,6 @@ const MyBookings = () => {
               <tr className="text-left">
                 <th className="p-4">Event</th>
                 <th className="p-4">Date</th>
-                <th className="p-4">Location</th>
                 <th className="p-4">Booking</th>
                 <th className="p-4">Payment</th>
                 <th className="p-4">Amount</th>
@@ -61,13 +58,9 @@ const MyBookings = () => {
 
             <tbody>
               {bookings.map((b) => (
-                <tr
-                  key={b.id}
-                  className="border-t hover:bg-gray-50"
-                >
-                  <td className="p-4 font-medium">{b.eventName}</td>
-                  <td className="p-4">{b.eventDate}</td>
-                  <td className="p-4">{b.location}</td>
+                <tr key={b.id} className="border-t hover:bg-gray-50">
+                  <td className="p-4 font-medium">{b.event?.title || "Unknown"}</td>
+                  <td className="p-4">{b.event?.eventDate || "—"}</td>
 
                   <td className="p-4">
                     <StatusBadge value={b.bookingStatus} />
@@ -77,22 +70,20 @@ const MyBookings = () => {
                     <StatusBadge value={b.paymentStatus} />
                   </td>
 
-                  <td className="p-4">₹{b.amount}</td>
+                  <td className="p-4">₹{b.amount ?? 0}</td>
 
                   <td className="p-4 flex gap-2">
                     {b.paymentStatus === "PENDING" ? (
-                      <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
-                        Pay Now
+                      <button
+                        onClick={() => handlePay(b.id)}
+                        disabled={payingId === b.id}
+                        className={`px-3 py-1 rounded text-white text-sm ${payingId === b.id ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
+                      >
+                        {payingId === b.id ? "Processing..." : "Pay Now"}
                       </button>
                     ) : (
-                      <button className="bg-gray-300 px-3 py-1 rounded cursor-not-allowed">
-                        Paid
-                      </button>
+                      <span className="text-gray-400 text-sm">—</span>
                     )}
-
-                    <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
-                      View
-                    </button>
                   </td>
                 </tr>
               ))}
@@ -103,4 +94,5 @@ const MyBookings = () => {
     </div>
   );
 };
+
 export default MyBookings;

@@ -1,35 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import StatusBadge from "../../components/StatusBadge";
+import { getApprovedEvents } from "../../api/eventApi";
 
 const MyEvents = () => {
-  // TEMP DATA (later from backend)
-  const [events] = useState([
-    {
-      id: 1,
-      title: "Tech Conference 2026",
-      date: "2026-02-10",
-      location: "Pune",
-      status: "APPROVED",
-      price: 499,
-    },
-    {
-      id: 2,
-      title: "Startup Meetup",
-      date: "2026-03-05",
-      location: "Mumbai",
-      status: "PENDING",
-      price: 0,
-    },
-  ]);
+  const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getApprovedEvents()
+      .then((res) => setEvents(res.data ?? []))
+      .catch((err) => console.error("Failed to load events", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <p className="text-gray-500 p-6">Loading events...</p>;
 
   return (
-    <div>
+    <div className="p-6">
       {/* HEADER */}
       <div className="mb-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">
-          My Events
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-800">My Events</h1>
 
-        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        <button
+          onClick={() => navigate("/organizer/create-event")}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
           + Create Event
         </button>
       </div>
@@ -37,9 +34,7 @@ const MyEvents = () => {
       {/* TABLE */}
       <div className="bg-white shadow rounded p-4 overflow-x-auto">
         {events.length === 0 ? (
-          <p className="text-gray-500">
-            You haven’t created any events yet.
-          </p>
+          <p className="text-gray-500">You haven't created any events yet.</p>
         ) : (
           <table className="w-full border-collapse">
             <thead>
@@ -47,6 +42,7 @@ const MyEvents = () => {
                 <th className="pb-3">Title</th>
                 <th className="pb-3">Date</th>
                 <th className="pb-3">Location</th>
+                <th className="pb-3">Type</th>
                 <th className="pb-3">Status</th>
                 <th className="pb-3">Price</th>
                 <th className="pb-3">Actions</th>
@@ -54,34 +50,28 @@ const MyEvents = () => {
             </thead>
 
             <tbody>
-              {events.map(event => (
-                <tr key={event.id} className="border-b">
-                  <td className="py-3">{event.title}</td>
-                  <td className="py-3">{event.date}</td>
+              {events.map((event) => (
+                <tr key={event.id} className="border-b hover:bg-gray-50">
+                  <td className="py-3 font-medium">{event.title}</td>
+                  <td className="py-3">{event.eventDate}</td>
                   <td className="py-3">{event.location}</td>
-
                   <td className="py-3">
-                    <span
-                      className={`px-3 py-1 rounded text-sm text-white ${event.status === "APPROVED"
-                        ? "bg-green-600"
-                        : "bg-yellow-500"
-                        }`}
-                    >
-                      {event.status}
+                    <span className="px-3 py-1 text-sm rounded bg-gray-200">
+                      {event.eventType}
                     </span>
                   </td>
-
                   <td className="py-3">
-                    {event.price > 0 ? `₹${event.price}` : "Free"}
+                    <StatusBadge value={event.status} />
                   </td>
-
+                  <td className="py-3">
+                    {event.eventType === "FREE" ? "Free" : `₹${event.price}`}
+                  </td>
                   <td className="py-3 flex gap-2">
-                    <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
-                      Edit
-                    </button>
-
-                    <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
-                      Delete
+                    <button
+                      onClick={() => navigate(`/events/${event.id}`)}
+                      className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm"
+                    >
+                      View
                     </button>
                   </td>
                 </tr>

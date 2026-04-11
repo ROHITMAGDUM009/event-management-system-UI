@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { registerApi } from "../api/authApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ const Register = () => {
     fullName: "",
     email: "",
     password: "",
-    role: "USER",
+    role: "ROLE_USER",
   });
 
   // UI STATE
@@ -144,8 +144,8 @@ const Register = () => {
               value={form.role}
               onChange={handleChange}
             >
-              <option value="USER">User</option>
-              <option value="ORGANIZER">Organizer</option>
+              <option value="ROLE_USER">User</option>
+              <option value="ROLE_ORGANIZER">Organizer</option>
             </select>
           </div>
 
@@ -165,9 +165,9 @@ const Register = () => {
         {/* LOGIN LINK */}
         <div className="text-center mt-4 text-sm text-gray-600">
           Already have an account?{" "}
-          <a href="/login" className="text-blue-600 hover:underline">
+          <Link to="/login" className="text-blue-600 hover:underline">
             Login
-          </a>
+          </Link>
         </div>
       </div>
     </div>
