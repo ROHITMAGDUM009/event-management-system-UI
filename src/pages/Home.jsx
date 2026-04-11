@@ -1,37 +1,17 @@
+import { useEffect, useState } from "react";
 import EventCard from "../components/EventCard";
+import { getApprovedEvents } from "../api/eventApi";
 
 const Home = () => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // TEMPORARY DATA (Later comes from backend)
-  const events = [
-    {
-      id: 1,
-      title: "Tech Conference 2026",
-      date: "12 Feb 2026",
-      location: "Pune",
-      price: 499,
-      image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df",
-      description: "Join top tech leaders and developers."
-    },
-    {
-      id: 2,
-      title: "Music Night Live",
-      date: "20 Mar 2026",
-      location: "Mumbai",
-      price: 799,
-      image: "https://images.unsplash.com/photo-1518972559570-0d3a1dc4f9b4",
-      description: "Experience live performances and DJs."
-    },
-    {
-      id: 3,
-      title: "Startup Meetup",
-      date: "05 Apr 2026",
-      location: "Bangalore",
-      price: 299,
-      image: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678",
-      description: "Network with founders and investors."
-    }
-  ];
+  useEffect(() => {
+    getApprovedEvents()
+      .then((res) => setEvents(res.data ?? []))
+      .catch((err) => console.error("Failed to fetch events:", err))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div>
@@ -47,13 +27,13 @@ const Home = () => {
           </p>
 
           <div className="flex justify-center gap-4">
-            <button className="bg-white text-blue-700 px-6 py-3 rounded font-semibold hover:bg-gray-100">
+            <a href="/events" className="bg-white text-blue-700 px-6 py-3 rounded font-semibold hover:bg-gray-100">
               Explore Events
-            </button>
+            </a>
 
-            <button className="border border-white px-6 py-3 rounded hover:bg-white hover:text-blue-700">
-              Create Event
-            </button>
+            <a href="/register" className="border border-white px-6 py-3 rounded hover:bg-white hover:text-blue-700">
+              Get Started
+            </a>
           </div>
         </div>
       </section>
@@ -65,11 +45,17 @@ const Home = () => {
             Upcoming Events
           </h2>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events.map(event => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
+          {loading ? (
+            <p className="text-gray-500">Loading events...</p>
+          ) : events.length === 0 ? (
+            <p className="text-gray-500">No upcoming events at the moment.</p>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {events.slice(0, 6).map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>
