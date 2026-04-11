@@ -11,31 +11,28 @@ const OrganizerSidebar = () => {
 
   return (
     <aside className="w-64 bg-gray-900 text-white min-h-screen p-4">
-      {/* TITLE */}
-      <h2 className="text-xl font-bold mb-6 text-center">
+      <h2 className="text-xl font-bold mb-6 text-center text-blue-400">
         Organizer Panel
       </h2>
 
-      {/* NAV LINKS */}
       <nav className="space-y-2">
-        <NavLink to="/organizer" className={linkClass}>
-          📊 Dashboard
+        <NavLink to="/organizer" end className={linkClass}>
+          Dashboard
         </NavLink>
 
         <NavLink to="/organizer/my-events" className={linkClass}>
-          🎫 My Events
+          My Events
         </NavLink>
 
         <NavLink to="/organizer/create-event" className={linkClass}>
-          ➕ Create Event
+          Create Event
         </NavLink>
 
         <NavLink to="/organizer/bookings" className={linkClass}>
-          📄 Event Bookings
+          Event Bookings
         </NavLink>
       </nav>
 
-      {/* LOGOUT */}
       <button
         onClick={logout}
         className="mt-8 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded"
