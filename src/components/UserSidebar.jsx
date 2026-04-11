@@ -9,25 +9,20 @@ const UserSidebar = () => {
       <h2 className="text-xl font-bold mb-6">User Panel</h2>
 
       <nav className="flex flex-col gap-3">
-        <NavLink to="/user" className="sidebar-link">
-          📊 Dashboard
+        <NavLink to="/user" className={({ isActive }) => isActive ? "bg-gray-700 p-2 rounded" : "p-2"}>
+          Dashboard
         </NavLink>
 
-        <NavLink
-          to="/user/my-bookings"
-          className={({ isActive }) =>
-            isActive ? "bg-gray-700 p-2 rounded" : "p-2"
-          }
-        >
-          🎟 My Bookings
+        <NavLink to="/user/my-bookings" className={({ isActive }) => isActive ? "bg-gray-700 p-2 rounded" : "p-2"}>
+          My Bookings
         </NavLink>
 
-        <NavLink to="/user/payments" className="sidebar-link">
-          💳 Payments
+        <NavLink to="/user/my-events" className={({ isActive }) => isActive ? "bg-gray-700 p-2 rounded" : "p-2"}>
+          My Events
         </NavLink>
 
-        <NavLink to="/events" className="sidebar-link">
-          🎉 Browse Events
+        <NavLink to="/events" className={({ isActive }) => isActive ? "bg-gray-700 p-2 rounded" : "p-2"}>
+          Browse Events
         </NavLink>
       </nav>
 
