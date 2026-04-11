@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 const EventCard = ({ event }) => {
   return (
     <div className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden">
-      
-      <img
-        src={event.image}
-        alt={event.title}
-        className="h-48 w-full object-cover"
-      />
+
+      {event.imageUrl && (
+        <img
+          src={event.imageUrl}
+          alt={event.title}
+          className="h-48 w-full object-cover"
+        />
+      )}
 
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-800">
@@ -16,7 +18,7 @@ const EventCard = ({ event }) => {
         </h3>
 
         <p className="text-sm text-gray-500 mt-1">
-          {event.date} • {event.location}
+          {event.eventDate} • {event.location}
         </p>
 
         <p className="text-gray-600 text-sm mt-3">
@@ -25,7 +27,7 @@ const EventCard = ({ event }) => {
 
         <div className="mt-4 flex justify-between items-center">
           <span className="font-bold text-blue-600">
-            ₹{event.price}
+            {event.price > 0 ? `₹${event.price}` : "Free"}
           </span>
 
           <Link
