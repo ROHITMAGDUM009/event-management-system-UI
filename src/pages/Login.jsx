@@ -30,7 +30,7 @@ const Login = () => {
       const res = await loginApi({ email, password });
 
       // SAVE TOKEN + ROLE
-      login(res.data.token, res.data.role);
+      login(res.data.token, res.data.role, res.data.username);
 
       // ROLE BASED REDIRECT
       if (res.data.role === "ROLE_USER") {
