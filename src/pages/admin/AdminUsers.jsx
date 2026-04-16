@@ -290,7 +290,6 @@ const AdminUsers = () => {
                                 </tr>
                             ))}
                         </tbody>
-
                     </table>
                 </div>
             )}
