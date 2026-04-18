@@ -1,25 +1,25 @@
+// src/api/bookingApi.js
+
 import api from "./axios";
 
-// USER — book an event
-export const bookEvent = (eventId) =>
-  api.post("/bookings", { eventId });
+export const bookEvent = (data) =>
+    api.post("/bookings", data);
 
-// USER — get my bookings
 export const getMyBookings = () =>
-  api.get("/bookings/my");
+    api.get("/bookings/my");
 
-// ORGANIZER — get bookings for my events
-export const getOrganizerBookings = () =>
-  api.get("/organizer/bookings/my");
+export const cancelBooking = (bookingId, reason) =>
+    api.post(`/bookings/${bookingId}/cancel`, { reason });
 
-// ORGANIZER — approve a booking
-export const approveBooking = (id) =>
-  api.post(`/organizer/bookings/${id}/approve`);
-
-// ORGANIZER — reject a booking
-export const rejectBooking = (id) =>
-  api.post(`/organizer/bookings/${id}/reject`);
-
-// PAYMENT — pay for a booking
 export const payForBooking = (bookingId) =>
-  api.post(`/payments/pay/${bookingId}`);
+    api.post(`/payments/pay/${bookingId}`);
+
+// ✅ THIS MUST EXIST:
+export const getOrganizerBookings = () =>
+    api.get("/organizer/bookings/my");
+
+export const approveBooking = (bookingId) =>
+    api.post(`/organizer/bookings/${bookingId}/approve`);
+
+export const rejectBooking = (bookingId) =>
+    api.post(`/organizer/bookings/${bookingId}/reject`);
