@@ -43,6 +43,7 @@ const OrganizerMyEvents = () => {
                 <th className="pb-3">Date</th>
                 <th className="pb-3">Location</th>
                 <th className="pb-3">Type</th>
+                <th className="pb-3">Seats</th>
                 <th className="pb-3">Price</th>
                 <th className="pb-3">Status</th>
                 <th className="pb-3">Actions</th>
@@ -50,32 +51,56 @@ const OrganizerMyEvents = () => {
             </thead>
 
             <tbody>
-              {events.map((event) => (
-                <tr key={event.id} className="border-b hover:bg-gray-50">
-                  <td className="py-3 font-medium">{event.title}</td>
-                  <td className="py-3">{event.eventDate}</td>
-                  <td className="py-3">{event.location}</td>
-                  <td className="py-3">
-                    <span className="px-3 py-1 text-sm rounded bg-gray-200">
-                      {event.eventType}
-                    </span>
-                  </td>
-                  <td className="py-3">
-                    {event.eventType === "FREE" ? "Free" : `₹${event.price}`}
-                  </td>
-                  <td className="py-3">
-                    <StatusBadge value={event.status} />
-                  </td>
-                  <td className="py-3 flex gap-2">
-                    <button
-                      onClick={() => navigate(`/events/${event.id}`)}
-                      className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm"
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {events.map((event) => {
+                // ✅ Editable if PENDING or before lock date
+                const isEditable = event.status === "PENDING";
+
+                return (
+                  <tr key={event.id} className="border-b hover:bg-gray-50">
+                    <td className="py-3 font-medium">{event.title}</td>
+                    <td className="py-3">{event.eventDate}</td>
+                    <td className="py-3">{event.location}</td>
+                    <td className="py-3">
+                      <span className="px-3 py-1 text-sm rounded bg-gray-200">
+                        {event.eventType === "FREE" ? "Free" : "Paid"}
+                      </span>
+                    </td>
+                    <td className="py-3">
+                      {event.hasSeatLimit
+                        ? `${event.availableSeats !== null ? event.availableSeats : 0}/${event.totalSeats}`
+                        : "∞"}
+                    </td>
+                    <td className="py-3">
+                      {event.eventType === "FREE" ? "Free" : `₹${event.price}`}
+                    </td>
+                    <td className="py-3">
+                      <StatusBadge value={event.status} />
+                    </td>
+                    <td className="py-3 flex gap-2">
+                      <button
+                        onClick={() => navigate(`/events/${event.id}`)}
+                        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm"
+                      >
+                        View
+                      </button>
+
+                      {/* ✅ FIXED — Edit button with navigation */}
+                      {isEditable ? (
+                        <button
+                          onClick={() => navigate(`/organizer/edit-event/${event.id}`)}
+                          className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm"
+                        >
+                          Edit
+                        </button>
+                      ) : (
+                        <span className="text-gray-400 text-sm self-center">
+                          🔒 Locked
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}

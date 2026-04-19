@@ -10,17 +10,17 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const dashboardPath = user
-    ? user.role === "ROLE_ADMIN"
-      ? "/admin"
-      : user.role === "ROLE_ORGANIZER"
-      ? "/organizer"
-      : "/user"
-    : "/login";
+  const dashboardPath =
+    !user ? "/login"
+      : user.role === "ROLE_ADMIN" ? "/admin"
+        : user.role === "ROLE_ORGANIZER" ? "/organizer"
+          : "/user";
 
   return (
     <nav className="bg-white shadow">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-6 py-4 
+                      flex justify-between items-center">
+
         <Link to="/" className="text-xl font-bold text-blue-600">
           EMS
         </Link>
@@ -29,34 +29,39 @@ const Navbar = () => {
           <Link to="/" className="text-gray-700 hover:text-blue-600">
             Home
           </Link>
-          <Link to="/events" className="text-gray-700 hover:text-blue-600">
+          <Link to="/events"
+            className="text-gray-700 hover:text-blue-600">
             Events
           </Link>
 
           {user ? (
             <>
-              <Link
-                to={dashboardPath}
-                className="text-gray-700 hover:text-blue-600"
-              >
+              {/* ✅ Show fullName */}
+              <span className="text-sm text-gray-500">
+                👋 {user.fullName || user.email}
+              </span>
+
+              <Link to={dashboardPath}
+                className="text-gray-700 hover:text-blue-600">
                 Dashboard
               </Link>
+
               <button
                 onClick={handleLogout}
-                className="text-red-500 hover:text-red-700 text-sm font-medium"
+                className="text-red-500 hover:text-red-700 
+                           text-sm font-medium"
               >
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="text-gray-700 hover:text-blue-600">
+              <Link to="/login"
+                className="text-gray-700 hover:text-blue-600">
                 Login
               </Link>
-              <Link
-                to="/register"
-                className="text-gray-700 hover:text-blue-600"
-              >
+              <Link to="/register"
+                className="text-gray-700 hover:text-blue-600">
                 Register
               </Link>
             </>

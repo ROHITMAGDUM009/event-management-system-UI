@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 /* ================= PUBLIC PAGES ================= */
 import Home from "../pages/Home";
 import Events from "../pages/Events";
-
 import EventDetails from "../pages/EventDetails";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -22,12 +21,12 @@ import AdminDashboard from "../dashboards/AdminDashboard";
 
 /* ================= USER PAGES ================= */
 import MyBookings from "../pages/user/MyBookings";
-import MyEvents from "../pages/user/MyEvents";
 
 /* ================= ORGANIZER PAGES ================= */
 import OrganizerMyEvents from "../pages/organizer/OrganizerMyEvents";
 import OrganizerBookings from "../pages/organizer/OrganizerBookings";
 import CreateEvent from "../pages/organizer/CreateEvent";
+import EditEvent from "../pages/organizer/EditEvent";  // ✅ ADDED
 
 /* ================= ADMIN PAGES ================= */
 import AdminUsers from "../pages/admin/AdminUsers";
@@ -60,7 +59,6 @@ const AppRoutes = () => {
         >
           <Route index element={<UserDashboard />} />
           <Route path="my-bookings" element={<MyBookings />} />
-          <Route path="my-events" element={<MyEvents />} />
         </Route>
 
         {/* ================= ORGANIZER ROUTES ================= */}
@@ -75,6 +73,7 @@ const AppRoutes = () => {
           <Route index element={<OrganizerDashboard />} />
           <Route path="my-events" element={<OrganizerMyEvents />} />
           <Route path="create-event" element={<CreateEvent />} />
+          <Route path="edit-event/:id" element={<EditEvent />} />  {/* ✅ ADDED */}
           <Route path="bookings" element={<OrganizerBookings />} />
         </Route>
 

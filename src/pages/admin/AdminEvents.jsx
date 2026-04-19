@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import StatusBadge from "../../components/StatusBadge";
 import { approveEvent, getAllEventsAdmin, rejectEvent } from "../../api/adminApi";
+import API from "../../api/axios";
 
 const AdminEvents = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   const fetchEvents = async () => {
     try {
@@ -14,16 +16,13 @@ const AdminEvents = () => {
       const res = await getAllEventsAdmin();
       setEvents(res.data ?? []);
     } catch (err) {
-      console.error("Failed to load admin events", err);
       setError("Failed to load events");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
+  useEffect(() => { fetchEvents(); }, []);
 
   const handleApprove = async (id) => {
     try {
@@ -44,12 +43,34 @@ const AdminEvents = () => {
     }
   };
 
+  const handleDelete = async (id, title) => {
+    const reason = window.prompt(`Delete event "${title}"?\nEnter reason (required):`);
+    if (!reason) return;
+
+    try {
+      await API.put(`/admin/events/${id}/delete`, { reason });
+      setMessage(`✅ Event "${title}" deleted`);
+      setTimeout(() => setMessage(""), 3000);
+      fetchEvents();
+    } catch (err) {
+      setMessage(`❌ ${err.response?.data?.message || "Delete failed"}`);
+      setTimeout(() => setMessage(""), 5000);
+    }
+  };
+
   if (loading) return <p className="text-gray-500">Loading events...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
-    <div>
+    <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Event Approvals</h1>
+
+      {message && (
+        <div className={`p-3 rounded mb-4 text-sm ${message.includes("✅") ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+          }`}>
+          {message}
+        </div>
+      )}
 
       {events.length === 0 ? (
         <p className="text-gray-500">No events found.</p>
@@ -91,7 +112,13 @@ const AdminEvents = () => {
                         </button>
                       </div>
                     ) : (
-                      <span className="text-sm text-gray-500">Action Taken</span>
+                      /* ✅ REMOVED "Action Taken" text */
+                      <button
+                        onClick={() => handleDelete(event.id, event.title)}
+                        className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700 text-sm"
+                      >
+                        Delete
+                      </button>
                     )}
                   </td>
                 </tr>
@@ -100,6 +127,15 @@ const AdminEvents = () => {
           </table>
         </div>
       )}
+
+      <div className="mt-6 flex justify-end">
+        <button
+          onClick={fetchEvents}
+          className="text-sm text-gray-500 hover:text-gray-800"
+        >
+          🔄 Refresh
+        </button>
+      </div>
     </div>
   );
 };

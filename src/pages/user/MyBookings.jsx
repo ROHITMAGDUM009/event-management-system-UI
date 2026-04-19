@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import StatusBadge from "../../components/StatusBadge";
-import { getMyBookings, payForBooking } from "../../api/bookingApi";
+import { getMyBookings } from "../../api/bookingApi";
+import API from "../../api/axios";
 
 const MyBookings = () => {
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [payingId, setPayingId] = useState(null);
+  const [message, setMessage] = useState("");
+  const [cancellingId, setCancellingId] = useState(null);
 
   const fetchBookings = async () => {
     try {
@@ -20,15 +24,20 @@ const MyBookings = () => {
 
   useEffect(() => { fetchBookings(); }, []);
 
-  const handlePay = async (bookingId) => {
-    setPayingId(bookingId);
+  const handleCancel = async (bookingId) => {
+    const reason = window.prompt("Enter cancellation reason (optional):");
+    if (reason === null) return;
+
+    setCancellingId(bookingId);
     try {
-      await payForBooking(bookingId);
+      await API.post(`/bookings/${bookingId}/cancel`, { reason: reason || "No reason provided" });
+      setMessage("✅ Booking cancelled successfully");
       fetchBookings();
     } catch (err) {
-      alert("Payment failed");
+      setMessage(`❌ ${err.response?.data?.message || "Cancellation failed"}`);
     } finally {
-      setPayingId(null);
+      setCancellingId(null);
+      setTimeout(() => setMessage(""), 5000);
     }
   };
 
@@ -38,9 +47,29 @@ const MyBookings = () => {
     <div className="p-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">My Bookings</h1>
 
+      {message && (
+        <div className={`p-3 rounded mb-4 text-sm ${message.includes("✅") ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+          }`}>
+          {message}
+        </div>
+      )}
+
       {bookings.length === 0 ? (
-        <div className="bg-white p-10 rounded shadow text-center text-gray-500">
-          You haven't booked any events yet.
+        /* ✅ ADDED CTA BUTTON */
+        <div className="bg-white p-10 rounded shadow text-center">
+          <div className="text-6xl mb-4">🎫</div>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            No Bookings Yet
+          </h3>
+          <p className="text-gray-500 mb-6">
+            You haven't booked any events. Browse upcoming events and book your first one!
+          </p>
+          <button
+            onClick={() => navigate("/events")}
+            className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 font-medium"
+          >
+            Browse Events
+          </button>
         </div>
       ) : (
         <div className="bg-white shadow rounded overflow-x-auto">
@@ -49,37 +78,37 @@ const MyBookings = () => {
               <tr className="text-left">
                 <th className="p-4">Event</th>
                 <th className="p-4">Date</th>
+                <th className="p-4">Tickets</th>
                 <th className="p-4">Booking</th>
                 <th className="p-4">Payment</th>
                 <th className="p-4">Amount</th>
                 <th className="p-4">Action</th>
               </tr>
             </thead>
-
             <tbody>
               {bookings.map((b) => (
                 <tr key={b.id} className="border-t hover:bg-gray-50">
                   <td className="p-4 font-medium">{b.event?.title || "Unknown"}</td>
                   <td className="p-4">{b.event?.eventDate || "—"}</td>
-
+                  <td className="p-4">{b.ticketQuantity || 1}</td>
                   <td className="p-4">
                     <StatusBadge value={b.bookingStatus} />
                   </td>
-
                   <td className="p-4">
                     <StatusBadge value={b.paymentStatus} />
                   </td>
-
                   <td className="p-4">₹{b.amount ?? 0}</td>
-
-                  <td className="p-4 flex gap-2">
-                    {b.paymentStatus === "PENDING" ? (
+                  <td className="p-4">
+                    {b.bookingStatus === "APPROVED" && b.paymentStatus !== "FAILED" ? (
                       <button
-                        onClick={() => handlePay(b.id)}
-                        disabled={payingId === b.id}
-                        className={`px-3 py-1 rounded text-white text-sm ${payingId === b.id ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"}`}
+                        onClick={() => handleCancel(b.id)}
+                        disabled={cancellingId === b.id}
+                        className={`px-3 py-1 rounded text-white text-sm ${cancellingId === b.id
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-red-600 hover:bg-red-700"
+                          }`}
                       >
-                        {payingId === b.id ? "Processing..." : "Pay Now"}
+                        {cancellingId === b.id ? "..." : "Cancel"}
                       </button>
                     ) : (
                       <span className="text-gray-400 text-sm">—</span>

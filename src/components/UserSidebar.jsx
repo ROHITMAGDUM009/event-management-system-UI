@@ -1,34 +1,33 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const UserSidebar = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  const linkClass = ({ isActive }) =>
+    `block p-2 rounded transition ${isActive ? "bg-gray-700 text-white" : "text-gray-300 hover:bg-gray-700"
+    }`;
 
   return (
     <aside className="w-64 min-h-screen bg-slate-900 text-white p-4">
       <h2 className="text-xl font-bold mb-6">User Panel</h2>
 
-      <nav className="flex flex-col gap-3">
-        <NavLink to="/user" className={({ isActive }) => isActive ? "bg-gray-700 p-2 rounded" : "p-2"}>
-          Dashboard
-        </NavLink>
-
-        <NavLink to="/user/my-bookings" className={({ isActive }) => isActive ? "bg-gray-700 p-2 rounded" : "p-2"}>
-          My Bookings
-        </NavLink>
-
-        <NavLink to="/user/my-events" className={({ isActive }) => isActive ? "bg-gray-700 p-2 rounded" : "p-2"}>
-          My Events
-        </NavLink>
-
-        <NavLink to="/events" className={({ isActive }) => isActive ? "bg-gray-700 p-2 rounded" : "p-2"}>
-          Browse Events
-        </NavLink>
+      <nav className="flex flex-col gap-2">
+        <NavLink to="/user" end className={linkClass}>Dashboard</NavLink>
+        <NavLink to="/user/my-bookings" className={linkClass}>My Bookings</NavLink>
+        {/* ✅ REMOVED — My Events (users don't create events) */}
+        <NavLink to="/events" className={linkClass}>Browse Events</NavLink>
       </nav>
 
       <button
-        onClick={logout}
-        className="mt-8 bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
+        onClick={handleLogout}
+        className="mt-8 bg-red-600 hover:bg-red-700 px-4 py-2 rounded w-full text-sm"
       >
         Logout
       </button>
