@@ -8,11 +8,15 @@ export const getApprovedEvents = () =>
 export const getMyEvents = () =>
   api.get("/events/my");
 
-// ORGANIZER — create event
-export const createEvent = (data) =>
-  api.post("/events", data);
+// ✅ FIXED — CREATE EVENT (accept FormData directly)
+export const createEvent = (formData) =>
+  api.post("/events", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
-// ORGANIZER — update event
+// ORGANIZER — update event (JSON only for now)
 export const updateEvent = (id, data) =>
   api.put(`/events/${id}`, data);
 
