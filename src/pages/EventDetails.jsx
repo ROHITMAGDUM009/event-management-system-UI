@@ -15,9 +15,11 @@ const EventDetails = () => {
   const [message, setMessage] = useState("");
   const [msgType, setMsgType] = useState("");
 
-  // ✅ TICKET QUANTITY
   const [ticketQty, setTicketQty] = useState(1);
   const maxTickets = 10;
+
+  // 🔥 BASE URL FIX
+  const BASE_URL = "http://localhost:8080";
 
   useEffect(() => {
     API.get(`/events/${id}`)
@@ -32,8 +34,10 @@ const EventDetails = () => {
       return;
     }
 
+
     setBooking(true);
     setMessage("");
+
     try {
       await bookEvent({ eventId: event.id, ticketQuantity: ticketQty });
       setMessage(`🎉 Booking successful! ${ticketQty} ticket(s) confirmed.`);
@@ -56,9 +60,17 @@ const EventDetails = () => {
     <div className="bg-gray-100 min-h-screen py-10">
       <div className="max-w-5xl mx-auto bg-white rounded shadow overflow-hidden">
 
-        {event.imageUrl && (
-          <img src={event.imageUrl} alt={event.title} className="w-full h-64 object-cover" />
-        )}
+        {/* 🔥 FIXED IMAGE */}
+        <img
+          src={
+            event.imageUrl
+              ? `${BASE_URL}${event.imageUrl}`
+              : "/default-event.png"
+          }
+          alt={event.title}
+          className="w-full h-64 object-cover"
+          onError={(e) => (e.target.src = "/default-event.png")}
+        />
 
         <div className="p-6">
           <h1 className="text-3xl font-bold text-gray-800">{event.title}</h1>
@@ -84,7 +96,6 @@ const EventDetails = () => {
             </div>
           )}
 
-          {/* ✅ TICKET QUANTITY SELECTOR */}
           {user?.role === "ROLE_USER" && (
             <div className="mt-6 p-4 bg-gray-50 rounded">
               <label className="block text-sm font-medium mb-2">Number of Tickets</label>
@@ -102,7 +113,6 @@ const EventDetails = () => {
             </div>
           )}
 
-          {/* ✅ PRICE SUMMARY */}
           {event.price > 0 && (
             <div className="mt-4 p-4 bg-blue-50 rounded">
               <div className="flex justify-between text-sm">
