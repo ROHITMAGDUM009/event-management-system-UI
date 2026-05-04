@@ -13,21 +13,24 @@ const CreateEvent = () => {
         price: "",
         approvalType: "AUTO",
         imageUrl: "",
-        hasSeatLimit: false,
+        hasSeatLimit: "false", // ✅ Fixed: string to match <select> values
         totalSeats: "",
     });
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    // ADD STATE for image file
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
 
-    // ADD handler
+    // ✅ ADDED: This was missing and causing your crash
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm(prev => ({ ...prev, [name]: value }));
+    };
+
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            // Validate file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
                 setError("Image size must be less than 5MB");
                 return;
@@ -37,7 +40,6 @@ const CreateEvent = () => {
         }
     };
 
-    // UPDATE handleSubmit for multipart
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -46,7 +48,6 @@ const CreateEvent = () => {
         try {
             const formData = new FormData();
 
-            // Add event data as JSON
             const eventData = {
                 title: form.title,
                 description: form.description,
@@ -56,25 +57,29 @@ const CreateEvent = () => {
                 price: form.eventType === "PAID" ? Number(form.price) : null,
                 approvalType: form.approvalType,
                 hasSeatLimit: form.hasSeatLimit === "true",
-                totalSeats: form.hasSeatLimit === "true" ? Number(form.totalSeats) : null,
+
+                // ✅ FIXED: prevent 0 seats bug
+                totalSeats:
+                    form.hasSeatLimit === "true" && form.totalSeats
+                        ? Number(form.totalSeats)
+                        : null,
             };
 
-            formData.append("event", new Blob([JSON.stringify(eventData)], {
-                type: "application/json"
-            }));
+            formData.append(
+                "event",
+                new Blob([JSON.stringify(eventData)], {
+                    type: "application/json",
+                })
+            );
 
-            // Add image file
             if (imageFile) {
                 formData.append("image", imageFile);
             }
 
-            await API.post("/events", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            });
+            await createEvent(formData);
 
             navigate("/organizer/my-events");
+
         } catch (err) {
             setError(err.response?.data?.message || "Failed to create event");
         } finally {
@@ -82,6 +87,24 @@ const CreateEvent = () => {
         }
     };
 
+    // ✅ Added: Clean reset handler that also clears image state
+    const handleReset = () => {
+        setForm({
+            title: "",
+            description: "",
+            location: "",
+            eventDate: "",
+            eventType: "FREE",
+            price: "",
+            approvalType: "AUTO",
+            imageUrl: "",
+            hasSeatLimit: "false",
+            totalSeats: "",
+        });
+        setImageFile(null);
+        setImagePreview(null);
+        setError("");
+    };
 
     return (
         <div className="max-w-3xl mx-auto p-6">
@@ -93,7 +116,6 @@ const CreateEvent = () => {
             )}
 
             <form onSubmit={handleSubmit} className="bg-white shadow rounded p-6 space-y-5">
-
                 {/* TITLE */}
                 <div>
                     <label className="block text-sm font-medium mb-1">Event Title</label>
@@ -125,28 +147,14 @@ const CreateEvent = () => {
                 {/* IMAGE UPLOAD */}
                 <div>
                     <label className="block text-sm font-medium mb-1">Event Image</label>
-
-                    {/* Preview */}
                     {imagePreview && (
                         <div className="mb-2">
-                            <img
-                                src={imagePreview}
-                                alt="Preview"
-                                className="w-32 h-32 object-cover rounded border"
-                            />
+                            <img src={imagePreview} alt="Preview" className="w-32 h-32 object-cover rounded border" />
                         </div>
                     )}
-
-                    {/* File Input */}
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="w-full border p-2 rounded"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                        JPG, PNG, GIF — Max 5MB (Optional)
-                    </p>
+                    <input type="file" accept="image/*" onChange={handleImageChange}
+                        className="w-full border p-2 rounded" />
+                    <p className="text-xs text-gray-500 mt-1">JPG, PNG, GIF — Max 5MB (Optional)</p>
                 </div>
 
                 {/* EVENT TYPE */}
@@ -173,8 +181,8 @@ const CreateEvent = () => {
                     <label className="block text-sm font-medium mb-1">Seat Limit</label>
                     <select name="hasSeatLimit" value={form.hasSeatLimit} onChange={handleChange}
                         className="w-full border p-2 rounded">
-                        <option value={false}>Unlimited Seats</option>
-                        <option value={true}>Limited Seats</option>
+                        <option value="false">Unlimited Seats</option>
+                        <option value="true">Limited Seats</option>
                     </select>
                 </div>
 
@@ -204,12 +212,8 @@ const CreateEvent = () => {
                         className={`px-6 py-2 text-white rounded ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}>
                         {loading ? "Submitting..." : "Create Event"}
                     </button>
-                    <button type="reset" className="px-6 py-2 bg-gray-200 rounded hover:bg-gray-300"
-                        onClick={() => setForm({
-                            title: "", description: "", location: "", eventDate: "",
-                            eventType: "FREE", price: "", approvalType: "AUTO", imageUrl: "",
-                            hasSeatLimit: false, totalSeats: ""
-                        })}>
+                    <button type="button" onClick={handleReset}
+                        className="px-6 py-2 bg-gray-200 rounded hover:bg-gray-300">
                         Reset
                     </button>
                 </div>
